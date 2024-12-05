@@ -31,38 +31,40 @@
 	![result1](img/04.png)  
 4. У ресурса docker_image отсутствует имя, требуется указывать тип и имя. Во втором случае допущена ошибка в имени. Имя не может начинаться на цифру. Так же присутствует две ошибки в параметре name ресурса docker_container.  
 5. 
-		>  resource "docker_image" "nginx" {
-		>   name         = "nginx:latest"
-		>   keep_locally = true
-		> }
-		> 
-		> resource "docker_container" "nginx" {
-		>   image = docker_image.nginx.image_id
-		>   name = "example_${random_password.random_string.result}"
-		>   ports {
-		>     internal = 80
-		>     external = 9090
-		>   }
-		> }
-
-	![docker ps](img/05.png)  
+```
+resource "docker_image" "nginx" {
+    name         = "nginx:latest"
+    keep_locally = true
+ }
+ 
+resource "docker_container" "nginx" {
+    image = docker_image.nginx.image_id
+    name = "example_${random_password.random_string.result}"
+    ports {
+      internal = 80
+      external = 9090
+   }
+ }
+```
+![docker_ps](img/05.png)  
 6. auto-approve молча подтверждает все изменения. Если изменения были внесены ошибочно они все равно будут применены. Теряется возможность перепроверки применяемых изменений, однако это может быть полезно при использовании в пайплайнах, для автоматизации в ci/cd системах.  
 		![docker ps](img/06.png)
 8. Содержимое **terraform.tfstate** после уничтожения ресурсов.  
-		
-		>  {
-		>   "version": 4,
-		>   "terraform_version": "1.10.0",
-		>   "serial": 11,
-		>   "lineage": "4a13fa83-c7c6-a9fa-4ec1-1e053bdf6694",
-		>   "outputs": {},
-		>   "resources": [],
-		>   "check_results": null
-		> }
+```		
+  {
+   "version": 4,
+   "terraform_version": "1.10.0",
+   "serial": 11,
+   "lineage": "4a13fa83-c7c6-a9fa-4ec1-1e053bdf6694",
+   "outputs": {},
+   "resources": [],
+   "check_results": null
+ }
+```
 9. Образ не был удален так как в ресурсе docker_image используется параметр keep_locally в значении true.  
 
 Выдержка из документации:  
-
-		> **keep_locally** (Boolean) If true, then the Docker image won't be deleted on destroy operation. If this is false, it will delete the image from the docker local storage on destroy operation.
-
+```
+**keep_locally** (Boolean) If true, then the Docker image won't be deleted on destroy operation. If this is false, it will delete the image from the docker local storage on destroy operation.
+```
 
