@@ -51,7 +51,7 @@
 В качестве решения приложите вывод значений ip-адресов команды ```terraform output```.
 
 ### Решение 4
-![terraformOutput](/img/03.png)
+![terraformOutput](img/03.png)
 
 ### Задание 5
 
