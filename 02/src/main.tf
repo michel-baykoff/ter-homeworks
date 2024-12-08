@@ -8,17 +8,23 @@ resource "yandex_vpc_subnet" "develop" {
   v4_cidr_blocks = var.default_cidr
 }
 
+resource "yandex_vpc_subnet" "developdb" {
+  name           = var.vpc_namedb
+  zone           = var.rucentral1b
+  network_id     = yandex_vpc_network.develop.id
+  v4_cidr_blocks = var.rucentral1b_cidr
+}
 
 data "yandex_compute_image" "ubuntu" {
-  family = "ubuntu-2004-lts"
+  family = var.vm_web_image
 }
 resource "yandex_compute_instance" "platform" {
-  name        = "netology-develop-platform-web"
-  platform_id = "standart-v4"
+  name        = format("%s%s",local.vm_prefix,"-web")
+  platform_id = var.vm_web_platform
   resources {
-    cores         = 1
-    memory        = 1
-    core_fraction = 5
+    cores         = var.vms_resources.web.cores
+    memory        = var.vms_resources.web.memory
+    core_fraction = var.vms_resources.web.fraction
   }
   boot_disk {
     initialize_params {
@@ -26,16 +32,42 @@ resource "yandex_compute_instance" "platform" {
     }
   }
   scheduling_policy {
-    preemptible = true
+    preemptible = var.vm_web_scheduler
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.develop.id
-    nat       = true
+    nat       = var.vm_web_nat
   }
 
   metadata = {
-    serial-port-enable = 1
-    ssh-keys           = "ubuntu:${var.vms_ssh_root_key}"
+    serial-port-enable = var.vms_metadata.metadata.serial
+    ssh-keys           = "ubuntu:${var.vms_metadata.metadata.ssh-key}"
+  }
+}
+
+resource "yandex_compute_instance" "platformdb" {
+  name        = format("%s%s",local.vm_prefix,"-db")
+  platform_id = var.vm_db_platform
+  resources {
+    cores         = var.vms_resources.db.cores
+    memory        = var.vms_resources.db.memory
+    core_fraction = var.vms_resources.db.fraction
+  }
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.ubuntu.image_id
+    }
+  }
+  scheduling_policy {
+    preemptible = var.vm_db_scheduler
+  }
+  network_interface {
+    subnet_id = yandex_vpc_subnet.develop.id
+    nat       = var.vm_db_nat
   }
 
+  metadata = {
+    serial-port-enable = var.vms_metadata.metadata.serial
+    ssh-keys           = "ubuntu:${var.vms_metadata.metadata.ssh-key}"
+  }
 }
