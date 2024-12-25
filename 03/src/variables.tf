@@ -66,6 +66,10 @@ variable "vm_resources" {
 #    }
 }
 
+variable "web_disk_count" {
+  type = number
+}
+
 variable "vm_scheduler" {
   type = bool
 }
@@ -85,4 +89,34 @@ variable "vm_foreach" {
     memory = number,
     fraction = number, 
     disk = number }))
+}
+
+### disk_vm.tf
+variable "storage_vm_name" {
+  type = string
+}
+
+variable "storage_disk_size" {
+  type = number
+}
+
+variable "vm_storage_platform" {
+  type = string
+}
+
+variable "vm_storage_image"{
+  type = string
+}
+
+variable "storage_resources" {
+    type = map
+}
+variable "disk_foreach" {
+    type = set(string)
+}
+variable "disk_autodelete"{
+  type = bool
+}
+variable "storage_disk_count" {
+  type = number
 }

@@ -6,7 +6,7 @@ resource "yandex_compute_instance" "web" {
   
   depends_on = [ yandex_compute_instance.db ]
   
-  count = 2
+  count = var.web_disk_count
   name = "web-${count.index + 1}"
   platform_id = var.vm_web_platform
   
@@ -29,7 +29,7 @@ resource "yandex_compute_instance" "web" {
 #    memory        = var.vm_resources.${name}.memory
 #    core_fraction = var.vm_resources.${name}.fraction
 #  }
-#resources {
+#  resources {
 #    cores         = format("var.vm_resources.web-%s%s", count.index, ".cores")
 #    memory        = format("var.vm_resources.web-%s%s", count.index, ".memory")
 #    core_fraction = format("var.vm_resources.web-%s%s", count.index, ".fraction")
