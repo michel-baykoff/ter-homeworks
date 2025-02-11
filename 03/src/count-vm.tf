@@ -17,24 +17,6 @@ resource "yandex_compute_instance" "web" {
     }
   }
 
-# Not working
-#  resources {
-#    cores         = format("%s%s%s", "var.vm_resources.web-", count.index + 1, ".cores")
-#    memory        = format("%s%s%s", "var.vm_resources.web-", count.index + 1, ".memory")
-#    core_fraction = format("%s%s%s", "var.vm_resources.web-", count.index + 1, ".fraction")
-#  }
-#
-#  resources {
-#    cores         = var.vm_resources.${name}.cores
-#    memory        = var.vm_resources.${name}.memory
-#    core_fraction = var.vm_resources.${name}.fraction
-#  }
-#  resources {
-#    cores         = format("var.vm_resources.web-%s%s", count.index, ".cores")
-#    memory        = format("var.vm_resources.web-%s%s", count.index, ".memory")
-#    core_fraction = format("var.vm_resources.web-%s%s", count.index, ".fraction")
-#  }
-
     resources {
         cores         = var.vm_resources[keys(var.vm_resources)[count.index]].cores
         memory        = var.vm_resources[keys(var.vm_resources)[count.index]].memory

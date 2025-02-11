@@ -40,7 +40,6 @@ resource "yandex_compute_instance" "storage" {
     content {
       disk_id = data.yandex_compute_disk.storage_disk[secondary_disk.value].id
       auto_delete = var.disk_autodelete
-
     }
 
   }
