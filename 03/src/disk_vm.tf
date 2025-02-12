@@ -36,9 +36,11 @@ resource "yandex_compute_instance" "storage" {
   }
   
   dynamic "secondary_disk" {
-    for_each = var.disk_foreach
+    #for_each = var.disk_foreach
+    for_each = { for dsk in yandex_compute_disk.storage_disk[*]: dsk.name=> dsk }
     content {
-      disk_id = data.yandex_compute_disk.storage_disk[secondary_disk.value].id
+      #disk_id = data.yandex_compute_disk.storage_disk[secondary_disk.value].id
+      disk_id = secondary_disk.value.id
       auto_delete = var.disk_autodelete
     }
 
